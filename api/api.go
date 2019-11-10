@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/adamkasztenny/slack-repeat-bot/domain"
 	"github.com/nlopes/slack"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -32,11 +33,14 @@ func (api *API) handleEvents(event slack.RTMEvent) {
 	switch message := event.Data.(type) {
 	case *slack.MessageEvent:
 		api.handleIncomingMessage(message)
+	case *slack.RTMError:
+		log.Errorf("Error: %s\n", message.Error())
 	}
 }
 
 func (api *API) handleIncomingMessage(incomingMessage *slack.MessageEvent) {
 	if strings.HasPrefix(incomingMessage.Text, keyword) {
+		log.Info("Sending repeated message")
 		api.sendMessage(incomingMessage)
 	}
 }

@@ -59,6 +59,22 @@ func (suite *APITestSuite) TestDoesNotSendAMessageIfTheKeywordIsNotPresent() {
 	assert.Nil(suite.T(), message)
 }
 
+func (suite *APITestSuite) TestHandlesError() {
+	api := new(API)
+	rtm := suite.createRTM(api)
+
+	rtm.incomingEvents <- slack.RTMEvent{
+		Data: &slack.RTMError{},
+	}
+	close(rtm.incomingEvents)
+
+	assert.NotPanics(suite.T(), func() {
+		api.Listen()
+	})
+	message := rtm.GetMostRecentMessage()
+	assert.Nil(suite.T(), message)
+}
+
 func (suite *APITestSuite) createRTM(api *API) *RTMStub {
 	rtmStub := new(RTMStub)
 	incomingEvents := make(chan slack.RTMEvent, 1)
