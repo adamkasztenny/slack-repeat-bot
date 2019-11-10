@@ -22,9 +22,11 @@ func (api *API) Initialize(token string) {
 }
 
 func (api *API) Listen() {
+	log.Info("Listening...")
 	go api.rtm.ManageConnection()
 
 	for event := range api.rtm.GetIncomingEvents() {
+		log.Debugf("Got event: %v", event)
 		api.handleEvents(event)
 	}
 }
