@@ -6,6 +6,7 @@ type RTMInterface interface {
 	GetIncomingEvents() chan slack.RTMEvent
 	ManageConnection()
 	NewOutgoingMessage(text string, channelID string, options ...slack.RTMsgOption) *slack.OutgoingMessage
+	SendMessage(msg *slack.OutgoingMessage)
 }
 
 type RTM struct {
@@ -22,4 +23,7 @@ func (rtm RTM) ManageConnection() {
 
 func (rtm RTM) NewOutgoingMessage(text string, channelID string, options ...slack.RTMsgOption) *slack.OutgoingMessage {
 	return rtm.rtm.NewOutgoingMessage(text, channelID, options...)
+}
+
+func (rtm RTM) SendMessage(msg *slack.OutgoingMessage) {
 }
