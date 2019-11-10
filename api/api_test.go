@@ -18,10 +18,12 @@ func (suite *APITestSuite) SetupTest() {
 func (suite *APITestSuite) TestInitialization() {
 	api := new(API)
 	token := gofakeit.UUID()
+
 	api.Initialize(token)
 
 	assert.NotZero(suite.T(), api)
 	assert.NotNil(suite.T(), api.client)
+	assert.NotNil(suite.T(), api.rtm)
 }
 
 func TestAPITestSuite(t *testing.T) {
