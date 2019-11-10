@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/adamkasztenny/slack-repeat-bot/api"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -14,6 +15,11 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		validateArgs(args)
 		initializeLogger()
+
+		token := args[0]
+		repeatBotAPI := new(api.API)
+		repeatBotAPI.Initialize(token)
+		repeatBotAPI.Listen()
 	},
 }
 
