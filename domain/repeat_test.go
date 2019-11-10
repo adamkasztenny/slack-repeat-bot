@@ -26,6 +26,22 @@ func (suite *RepeatTestSuite) TestRepeatingAWordLongerThanTwoLetters() {
 	assert.Contains(suite.T(), result, "yeye")
 }
 
+func (suite *RepeatTestSuite) TestRepeatingAMediumSizedWord() {
+	word := "friendly"
+	result := Repeat(word)
+
+	assert.Contains(suite.T(), result, word)
+	assert.Contains(suite.T(), result, "frfr")
+}
+
+func (suite *RepeatTestSuite) TestRepeatingALongWord() {
+	word := "antidisestablishmentarianism"
+	result := Repeat(word)
+
+	assert.Contains(suite.T(), result, word)
+	assert.Contains(suite.T(), result, "anan")
+}
+
 func TestRepeatTestSuite(t *testing.T) {
 	suite.Run(t, new(RepeatTestSuite))
 }
