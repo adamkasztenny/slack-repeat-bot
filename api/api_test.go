@@ -27,6 +27,23 @@ func (suite *APITestSuite) TestInitialization() {
 	assert.NotNil(suite.T(), api.rtm)
 }
 
+func (suite *APITestSuite) TestConnectsSuccessfully() {
+	api := new(API)
+	rtm := suite.createRTM(api)
+
+	rtm.incomingEvents <- slack.RTMEvent{
+		Data: &slack.ConnectedEvent{},
+	}
+	close(rtm.incomingEvents)
+
+	assert.NotPanics(suite.T(), func() {
+		api.Listen()
+	})
+
+	message := rtm.GetMostRecentMessage()
+	assert.Nil(suite.T(), message)
+}
+
 func (suite *APITestSuite) TestSendsAMessageWithRepeatedTextIfTheKeywordIsPresent() {
 	api := new(API)
 	rtm := suite.createRTM(api)

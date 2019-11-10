@@ -33,6 +33,8 @@ func (api *API) Listen() {
 
 func (api *API) handleEvents(event slack.RTMEvent) {
 	switch message := event.Data.(type) {
+	case *slack.ConnectedEvent:
+		log.Info("Connected successfully.")
 	case *slack.MessageEvent:
 		api.handleIncomingMessage(message)
 	case *slack.RTMError:
@@ -42,7 +44,7 @@ func (api *API) handleEvents(event slack.RTMEvent) {
 
 func (api *API) handleIncomingMessage(incomingMessage *slack.MessageEvent) {
 	if strings.HasPrefix(incomingMessage.Text, keyword) {
-		log.Info("Sending repeated message")
+		log.Infof("Sending repeated message to channel: %v", incomingMessage.Channel)
 		api.sendMessage(incomingMessage)
 	}
 }
