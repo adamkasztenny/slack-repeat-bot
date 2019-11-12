@@ -50,7 +50,7 @@ func (suite *APITestSuite) TestSendsAMessageWithRepeatedTextIfTheKeywordIsPresen
 	rtm := suite.createRTM(api)
 	suite.createClient(api)
 
-	word := "word"
+	word := "juice"
 	channel := gofakeit.UUID()
 	suite.sendMessage(rtm, keyword+word, channel)
 
@@ -60,7 +60,7 @@ func (suite *APITestSuite) TestSendsAMessageWithRepeatedTextIfTheKeywordIsPresen
 	assert.NotNil(suite.T(), message)
 	assert.Equal(suite.T(), channel, message.Channel)
 	assert.Contains(suite.T(), message.Text, word)
-	assert.Contains(suite.T(), message.Text, "wowo")
+	assert.Contains(suite.T(), message.Text, "juju")
 	assert.NotContains(suite.T(), message.Text, keyword)
 }
 
@@ -69,7 +69,7 @@ func (suite *APITestSuite) TestSendsAMessageWithTheUsernameIfTheKeywordIsPresent
 	rtm := suite.createRTM(api)
 	client := suite.createClient(api)
 
-	word := gofakeit.Word()
+	word := "friendly"
 	channel := gofakeit.UUID()
 	user := slack.User{
 		Name: gofakeit.FirstName(),
@@ -90,7 +90,7 @@ func (suite *APITestSuite) TestSendsAMessageWithoutTheUsernameIfThereIsAnError()
 	rtm := suite.createRTM(api)
 	client := suite.createClient(api)
 
-	word := gofakeit.Word()
+	word := "go"
 	channel := gofakeit.UUID()
 	client.SetUserInfo(nil, errors.New(gofakeit.UUID()))
 	suite.sendMessage(rtm, keyword+word, channel)
@@ -110,7 +110,7 @@ func (suite *APITestSuite) TestDoesNotSendAMessageIfTheKeywordIsNotPresent() {
 	rtm := suite.createRTM(api)
 	suite.createClient(api)
 
-	word := gofakeit.Word()
+	word := "yo"
 	channel := gofakeit.UUID()
 	suite.sendMessage(rtm, word, channel)
 
