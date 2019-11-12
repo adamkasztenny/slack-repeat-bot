@@ -10,7 +10,7 @@ import (
 
 const keyword = "say "
 
-var keywordRegex = regexp.MustCompile(keyword + "(.*)")
+var keywordRegex = regexp.MustCompile("(?i)" + keyword + "(.*)")
 
 type API struct {
 	client ClientInterface

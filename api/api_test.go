@@ -6,6 +6,7 @@ import (
 	"github.com/nlopes/slack"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"strings"
 	"testing"
 )
 
@@ -83,6 +84,29 @@ func (suite *APITestSuite) TestSendsAMessageWithTheUsernameIfTheKeywordIsPresent
 	assert.NotNil(suite.T(), message)
 	assert.Equal(suite.T(), channel, message.Channel)
 	assert.Contains(suite.T(), message.Text, user.Name)
+}
+
+func (suite *APITestSuite) TestSendsAMessageIrrespectiveOfTheCaseOfTheKeyword() {
+	api := new(API)
+	rtm := suite.createRTM(api)
+	client := suite.createClient(api)
+
+	word := "bro"
+	channel := gofakeit.UUID()
+	uppercaseKeyword := strings.ToUpper(keyword)
+	user := slack.User{
+		Name: gofakeit.FirstName(),
+	}
+	client.SetUserInfo(&user, nil)
+	suite.sendMessage(rtm, uppercaseKeyword+word, channel)
+
+	api.Listen()
+
+	message := rtm.GetMostRecentMessage()
+	assert.NotNil(suite.T(), message)
+	assert.Contains(suite.T(), message.Text, word)
+	assert.NotContains(suite.T(), message.Text, uppercaseKeyword)
+	assert.NotContains(suite.T(), message.Text, keyword)
 }
 
 func (suite *APITestSuite) TestSendsAMessageWithoutTheUsernameIfThereIsAnError() {
