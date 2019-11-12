@@ -20,5 +20,5 @@ func Repeat(word string) string {
 
 func getNumberOfRepetitions() int {
 	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(9) + 1
+	return rand.Intn(8) + 2
 }
