@@ -89,15 +89,11 @@ func (suite *APITestSuite) TestSendsAMessageWithTheUsernameIfTheKeywordIsPresent
 func (suite *APITestSuite) TestSendsAMessageIrrespectiveOfTheCaseOfTheKeyword() {
 	api := new(API)
 	rtm := suite.createRTM(api)
-	client := suite.createClient(api)
+	suite.createClient(api)
 
 	word := "bro"
 	channel := gofakeit.UUID()
 	uppercaseKeyword := strings.ToUpper(keyword)
-	user := slack.User{
-		Name: gofakeit.FirstName(),
-	}
-	client.SetUserInfo(&user, nil)
 	suite.sendMessage(rtm, uppercaseKeyword+word, channel)
 
 	api.Listen()
