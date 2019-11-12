@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/adamkasztenny/slack-repeat-bot/domain"
 	"github.com/nlopes/slack"
 	log "github.com/sirupsen/logrus"
@@ -10,19 +11,21 @@ import (
 const keyword = "say "
 
 type API struct {
-	client *slack.Client
+	client ClientInterface
 	rtm    RTMInterface
 }
 
 func (api *API) Initialize(token string) {
-	api.client = slack.New(token)
+	api.client = Client{
+		client: slack.New(token),
+	}
 	api.rtm = RTM{
 		rtm: api.client.NewRTM(),
 	}
 }
 
 func (api *API) Listen() {
-	log.Info("Listening...")
+	log.Info("Connecting...")
 	go api.rtm.ManageConnection()
 
 	for event := range api.rtm.GetIncomingEvents() {
@@ -50,7 +53,23 @@ func (api *API) handleIncomingMessage(incomingMessage *slack.MessageEvent) {
 }
 
 func (api *API) sendMessage(incomingMessage *slack.MessageEvent) {
+	username := api.getUsername(incomingMessage)
+	message := api.getMessage(incomingMessage, username)
+	api.rtm.SendMessage(api.rtm.NewOutgoingMessage(message, incomingMessage.Channel))
+}
+
+func (api *API) getUsername(incomingMessage *slack.MessageEvent) string {
+	user, err := api.client.GetUserInfo(incomingMessage.User)
+
+	if err != nil {
+		log.Errorf("Cannot get user with id %v: %v", incomingMessage.User, err)
+		return ""
+	}
+	return user.Name
+}
+
+func (api *API) getMessage(incomingMessage *slack.MessageEvent, username string) string {
 	wordToRepeat := strings.Replace(incomingMessage.Text, keyword, "", 1)
 	repeatedWord := domain.Repeat(wordToRepeat)
-	api.rtm.SendMessage(api.rtm.NewOutgoingMessage(repeatedWord, incomingMessage.Channel))
+	return fmt.Sprintf("%s says: %s", username, repeatedWord)
 }
