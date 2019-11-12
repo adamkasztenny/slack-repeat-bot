@@ -26,4 +26,5 @@ func (rtm RTM) NewOutgoingMessage(text string, channelID string, options ...slac
 }
 
 func (rtm RTM) SendMessage(msg *slack.OutgoingMessage) {
+	rtm.rtm.SendMessage(msg)
 }
