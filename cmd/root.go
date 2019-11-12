@@ -45,5 +45,4 @@ func initializeLogger() {
 	formatter := new(log.TextFormatter)
 	formatter.FullTimestamp = true
 	log.SetFormatter(formatter)
-	log.SetLevel(log.DebugLevel)
 }
