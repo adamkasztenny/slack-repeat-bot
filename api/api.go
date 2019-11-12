@@ -5,10 +5,13 @@ import (
 	"github.com/adamkasztenny/slack-repeat-bot/domain"
 	"github.com/nlopes/slack"
 	log "github.com/sirupsen/logrus"
+	"regexp"
 	"strings"
 )
 
 const keyword = "say "
+
+var keywordRegex = regexp.MustCompile(keyword + "(.*)")
 
 type API struct {
 	client ClientInterface
@@ -46,7 +49,7 @@ func (api *API) handleEvents(event slack.RTMEvent) {
 }
 
 func (api *API) handleIncomingMessage(incomingMessage *slack.MessageEvent) {
-	if strings.HasPrefix(incomingMessage.Text, keyword) {
+	if keywordRegex.MatchString(incomingMessage.Text) {
 		log.Infof("Sending repeated message to channel: %v", incomingMessage.Channel)
 		api.sendMessage(incomingMessage)
 	}
