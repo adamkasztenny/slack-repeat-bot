@@ -6,7 +6,6 @@ import (
 	"github.com/nlopes/slack"
 	log "github.com/sirupsen/logrus"
 	"regexp"
-	"strings"
 )
 
 const keyword = "say "
@@ -72,7 +71,7 @@ func (api *API) getUsername(incomingMessage *slack.MessageEvent) string {
 }
 
 func (api *API) getMessage(incomingMessage *slack.MessageEvent, username string) string {
-	wordToRepeat := strings.Replace(incomingMessage.Text, keyword, "", 1)
-	repeatedWord := domain.Repeat(wordToRepeat)
+	textToRepeat := keywordRegex.FindStringSubmatch(incomingMessage.Text)[1]
+	repeatedWord := domain.Repeat(textToRepeat)
 	return fmt.Sprintf("%s says: %s", username, repeatedWord)
 }
